@@ -3,6 +3,8 @@ package com.samvandenberge.todoalarmpad;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.samvandenberge.todoalarmpad.data.Todo;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;

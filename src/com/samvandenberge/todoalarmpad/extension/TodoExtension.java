@@ -25,9 +25,9 @@ import android.widget.RemoteViews;
 
 import com.mindmeapp.extensions.ExtensionData;
 import com.mindmeapp.extensions.MindMeExtension;
-import com.samvandenberge.todoalarmpad.DatabaseTodo;
 import com.samvandenberge.todoalarmpad.R;
-import com.samvandenberge.todoalarmpad.Todo;
+import com.samvandenberge.todoalarmpad.data.DatabaseTodo;
+import com.samvandenberge.todoalarmpad.data.Todo;
 
 public class TodoExtension extends MindMeExtension {
 	public static final String PREF_SPEAK_BEFORE = "pref_speak_before";
@@ -47,6 +47,12 @@ public class TodoExtension extends MindMeExtension {
 		// RemoteView
         RemoteViews rv = new RemoteViews(this.getPackageName(), R.layout.extension_remoteview);
         rv.setTextViewText(R.id.todo, todoItems.get(0).getName());
+        
+        
+        // to populate a list, use a service
+        // http://www.androidbook.com/item/3637
+        // http://www.cnblogs.com/carlo/p/3333864.html
+       
        //rv.setTextViewText(R.id.quote, q.quote + " (" + q.author + ")");
 		
 		// Publish the extension data update

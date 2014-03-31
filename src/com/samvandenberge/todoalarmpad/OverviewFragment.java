@@ -1,6 +1,5 @@
 package com.samvandenberge.todoalarmpad;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.app.ListFragment;
@@ -12,55 +11,72 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+
+import com.samvandenberge.todoalarmpad.data.DatabaseTodo;
+import com.samvandenberge.todoalarmpad.data.Todo;
 
 public class OverviewFragment extends ListFragment {
 	private static final String LOG_TAG = "OverviewFragment";
 	private Button mAddButton;
+	private EditText mNewTodo;
+
+	private List<Todo> mTodoItems;
+	private ArrayAdapter<Todo> mAdapter;
+	private DatabaseTodo db;
 
 	public OverviewFragment() {}
 
 	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		db = DatabaseTodo.getInstance(getActivity());
+		mTodoItems = db.getAllTodos();
+	}
+
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-
+		mNewTodo = (EditText) rootView.findViewById(R.id.etAdd);
 		mAddButton = (Button) rootView.findViewById(R.id.btnAdd);
 		mAddButton.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				// TODO
+				addTodo();
 			}
 		});
 
-		
-		List<Todo> todoItems = new ArrayList<Todo>();
-		todoItems.add(new Todo("Feed the dog"));
-		todoItems.add(new Todo("Make homework"));
+		mAdapter = new TodoListAdapter(getActivity(), R.layout.list_item, mTodoItems);
+		setListAdapter(mAdapter);
 
-		DatabaseTodo db = DatabaseTodo.getInstance(getActivity());
-		db.createTodo(new Todo("Feed the dog"));
-		db.createTodo(new Todo("Make homework"));
-		TodoListAdapter adapter = new TodoListAdapter(getActivity(), R.layout.list_item, todoItems);
-		
-
-//		String[] numbers_text = new String[] { "one", "two", "three", "four",  
-//			    "five", "six", "seven", "eight", "nine", "ten", "eleven",  
-//			    "twelve", "thirteen", "fourteen", "fifteen" };  
-//		
-//		ArrayAdapter<String> adapter = new ArrayAdapter<String>(  
-//			     inflater.getContext(), android.R.layout.simple_list_item_1,  
-//			     numbers_text);
-//		
-		setListAdapter(adapter);
-		
 		return rootView;
 	}
-	
+
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
-		
 		Log.i(LOG_TAG, "Clicked a list item");
+	}
+
+	/**
+	 * Add a new Todo item
+	 */
+	private void addTodo() {
+		String todoName = mNewTodo.getText().toString();
+		if (!todoName.equals("")) {
+			Todo todo = new Todo(todoName);
+			db.createTodo(todo);
+			mTodoItems.add(todo);
+			updateList();
+		}
+	}
+
+	/**
+	 * Update the ListView
+	 */
+	private void updateList() {
+		mAdapter.notifyDataSetChanged();
 	}
 }

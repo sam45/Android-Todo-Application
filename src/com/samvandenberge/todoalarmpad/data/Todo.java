@@ -1,4 +1,4 @@
-package com.samvandenberge.todoalarmpad;
+package com.samvandenberge.todoalarmpad.data;
 
 public class Todo {
 	private String name;

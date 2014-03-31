@@ -1,4 +1,4 @@
-package com.samvandenberge.todoalarmpad;
+package com.samvandenberge.todoalarmpad.data;
 
 import java.util.ArrayList;
 import java.util.List;
