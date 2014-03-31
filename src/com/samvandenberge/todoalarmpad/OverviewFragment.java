@@ -33,10 +33,14 @@ public class OverviewFragment extends ListFragment {
 			}
 		});
 
+		
 		List<Todo> todoItems = new ArrayList<Todo>();
 		todoItems.add(new Todo("Feed the dog"));
 		todoItems.add(new Todo("Make homework"));
 
+		DatabaseTodo db = DatabaseTodo.getInstance(getActivity());
+		db.createTodo(new Todo("Feed the dog"));
+		db.createTodo(new Todo("Make homework"));
 		TodoListAdapter adapter = new TodoListAdapter(getActivity(), R.layout.list_item, todoItems);
 		
 

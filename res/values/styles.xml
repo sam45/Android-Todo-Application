@@ -16,5 +16,12 @@
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
+    
+    <style name="header">
+        <item name="android:textSize">@dimen/header_font_size</item>
+        <!-- <item name="android:textAllCaps">true</item> 
+        <item name="android:fontFamily">sans-serif-condensed</item> -->
+        <item name="android:textStyle">bold</item>
+    </style>
 
 </resources>

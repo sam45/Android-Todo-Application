@@ -22,6 +22,29 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name="com.samvandenberge.todoalarmpad.extension.TodoExtension"
+            android:icon="@drawable/ic_launcher"
+            android:label="@string/extension_title"
+            android:permission="com.mindmeapp.extensions.permission.READ_EXTENSION_DATA" >
+            <intent-filter>
+                <action android:name="com.mindmeapp.extensions.Extension" />
+            </intent-filter>
+
+            <meta-data
+                android:name="protocolVersion"
+                android:value="1" />
+            <meta-data
+                android:name="worldReadable"
+                android:value="true" />
+            <meta-data
+                android:name="description"
+                android:value="@string/extension_description" />
+            <meta-data
+                android:name="settingsActivity"
+                android:value=".ReminderSettingsActivity" />
+        </service>
     </application>
 
 </manifest>

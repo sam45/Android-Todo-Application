@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Todo AlarmPad</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="app_name">TODO Extension for AlarmPad</string>
     <string name="action_settings">Settings</string>
+    
+    <!-- AlarmPad extension -->
+    <string name="extension_title">TODO Extension</string>
+    <string name="extension_description">See your TODO items when the alarm rings.</string>
+    <string name="pref_speak_before">Sentence to speak before the reminder</string>
+    <string name="pref_speak_before_default">Your TODO items for today are: </string>
+    <string name="title_settings">TODO Settings</string>
 
 </resources>
