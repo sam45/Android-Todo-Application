@@ -1,0 +1,26 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants"
+    android:gravity="center_vertical"
+    android:minHeight="?android:attr/listPreferredItemHeightSmall"
+    android:textAppearance="?android:attr/textAppearanceListItemSmall" >
+
+    <CheckBox
+        android:id="@+id/checkboxTodo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:checked="false" >
+    </CheckBox>
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignBaseline="@id/checkboxTodo"
+        android:layout_toLeftOf="@id/checkboxTodo"
+        android:focusable="false"
+        android:text="Feed the dog" />
+
+</RelativeLayout>
