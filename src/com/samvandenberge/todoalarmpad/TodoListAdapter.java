@@ -3,7 +3,7 @@ package com.samvandenberge.todoalarmpad;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.samvandenberge.todoalarmpad.data.Todo;
+import com.samvandenberge.todoalarmpad.model.Todo;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -47,7 +47,7 @@ public class TodoListAdapter extends ArrayAdapter<Todo> {
 		}
 
 		// refresh data
-		holder.name.setText(todo.getName());
+		holder.name.setText(todo.getNote());
 
 		return newView;
 	}

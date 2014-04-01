@@ -1,7 +1,10 @@
-package com.samvandenberge.todoalarmpad.data;
+package com.samvandenberge.todoalarmpad.sqlite;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.samvandenberge.todoalarmpad.model.Todo;
+import com.samvandenberge.todoalarmpad.util.Helper;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -10,16 +13,18 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseTodo extends SQLiteOpenHelper {
-	public static final int DATABASE_VERSION = 2;
+	public static final int DATABASE_VERSION = 3;
 	public static final String DATABASE_NAME = "db_todos.sql";
 	// tables
 	public static final String TABLE_TODO = "todos";
 	// common column names
 	public static final String KEY_ID = "_id";
-	public static final String KEY_NAME = "name";
+	public static final String KEY_TODO = "todo";
+	public static final String KEY_STATUS = "status";
+	public static final String KEY_CREATED_AT = "created_at";
 
 	private static DatabaseTodo sInstance;
-	
+
 	// Use the application context, which will ensure that you
 	// don't accidentally leak an Activity's context.
 	// See this article for more information: http://bit.ly/6LRzfx
@@ -39,9 +44,9 @@ public class DatabaseTodo extends SQLiteOpenHelper {
 	}
 
 	// Table Create Statements
-	private static final String CREATE_TABLE_TODO = "CREATE TABLE "
-			+ TABLE_TODO + "(" + KEY_ID + " INTEGER PRIMARY KEY," + KEY_NAME
-			+ " TEXT NOT NULL);";
+	private static final String CREATE_TABLE_TODO = "CREATE TABLE " + TABLE_TODO + "(" + KEY_ID
+			+ " INTEGER PRIMARY KEY," + KEY_TODO + " TEXT NOT NULL," + KEY_STATUS + " INTEGER," + KEY_CREATED_AT
+			+ "DATETIME DEFAULT CURRENT_TIMESTAMP);";
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
@@ -67,7 +72,9 @@ public class DatabaseTodo extends SQLiteOpenHelper {
 	public long createTodo(Todo todo) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
-		values.put(KEY_NAME, todo.getName());
+		values.put(KEY_TODO, todo.getNote());
+		values.put(KEY_STATUS, todo.getStatus());
+		values.put(KEY_CREATED_AT, Helper.getDateTime());
 
 		return db.insert(TABLE_TODO, null, values);
 	}
@@ -79,16 +86,19 @@ public class DatabaseTodo extends SQLiteOpenHelper {
 	 */
 	public Todo getTodo(long todoId) {
 		SQLiteDatabase db = this.getReadableDatabase();
-		String selectQuery = "SELECT  * FROM " + TABLE_TODO + " WHERE "
-				+ KEY_ID + " = " + todoId;
+		String selectQuery = "SELECT  * FROM " + TABLE_TODO + " WHERE " + KEY_ID + " = " + todoId;
 		Cursor c = db.rawQuery(selectQuery, null);
 
 		if (c != null)
 			c.moveToFirst();
 
-		Todo t = new Todo();
-		t.setName(c.getString(c.getColumnIndex(KEY_NAME)));
-		return t;
+		Todo td = new Todo();
+		td.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+		td.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+		td.setNote((c.getString(c.getColumnIndex(KEY_TODO))));
+		td.setCreatedAt(c.getString(c.getColumnIndex(KEY_CREATED_AT)));
+
+		return td;
 	}
 
 	/**
@@ -98,8 +108,7 @@ public class DatabaseTodo extends SQLiteOpenHelper {
 	 */
 	public void deleteTodo(long todoId) {
 		SQLiteDatabase db = this.getWritableDatabase();
-		db.delete(TABLE_TODO, KEY_ID + " = ?",
-				new String[] { String.valueOf(todoId) });
+		db.delete(TABLE_TODO, KEY_ID + " = ?", new String[] { String.valueOf(todoId) });
 	}
 
 	/**
@@ -116,9 +125,12 @@ public class DatabaseTodo extends SQLiteOpenHelper {
 
 		if (c.moveToFirst()) {
 			do {
-				Todo t = new Todo();
-				t.setName(c.getString(c.getColumnIndex(KEY_NAME)));
-				todoItems.add(t);
+				Todo td = new Todo();
+				td.setId(c.getInt((c.getColumnIndex(KEY_ID))));
+				td.setNote((c.getString(c.getColumnIndex(KEY_TODO))));
+				td.setCreatedAt(c.getString(c.getColumnIndex(KEY_CREATED_AT)));
+
+				todoItems.add(td);
 			} while (c.moveToNext());
 		}
 

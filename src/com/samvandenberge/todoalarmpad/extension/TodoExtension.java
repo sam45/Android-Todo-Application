@@ -26,8 +26,8 @@ import android.widget.RemoteViews;
 import com.mindmeapp.extensions.ExtensionData;
 import com.mindmeapp.extensions.MindMeExtension;
 import com.samvandenberge.todoalarmpad.R;
-import com.samvandenberge.todoalarmpad.data.DatabaseTodo;
-import com.samvandenberge.todoalarmpad.data.Todo;
+import com.samvandenberge.todoalarmpad.model.Todo;
+import com.samvandenberge.todoalarmpad.sqlite.DatabaseTodo;
 
 public class TodoExtension extends MindMeExtension {
 	public static final String PREF_SPEAK_BEFORE = "pref_speak_before";
@@ -46,7 +46,7 @@ public class TodoExtension extends MindMeExtension {
 
 		// RemoteView
         RemoteViews rv = new RemoteViews(this.getPackageName(), R.layout.extension_remoteview);
-        rv.setTextViewText(R.id.todo, todoItems.get(0).getName());
+        rv.setTextViewText(R.id.todo, todoItems.get(0).getNote());
         
         
         // to populate a list, use a service
@@ -57,10 +57,10 @@ public class TodoExtension extends MindMeExtension {
 		
 		// Publish the extension data update
 		publishUpdate(new ExtensionData().visible(true).icon(R.drawable.ic_launcher)
-				.statusToDisplay("TODO: " + todoItems.get(0).getName())
-				.statusToSpeak(name + todoItems.get(0).getName() + ".")
+				.statusToDisplay("TODO: " + todoItems.get(0).getNote())
+				.statusToSpeak(name + todoItems.get(0).getNote() + ".")
 				.languageToSpeak(Locale.US)
 				.viewsToDisplay(rv)
-				.contentDescription("Reminder " + todoItems.get(0).getName()));
+				.contentDescription("Reminder " + todoItems.get(0).getNote()));
 	}
 }

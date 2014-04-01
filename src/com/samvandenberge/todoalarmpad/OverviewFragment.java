@@ -14,8 +14,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.samvandenberge.todoalarmpad.data.DatabaseTodo;
-import com.samvandenberge.todoalarmpad.data.Todo;
+import com.samvandenberge.todoalarmpad.model.Todo;
+import com.samvandenberge.todoalarmpad.sqlite.DatabaseTodo;
 
 public class OverviewFragment extends ListFragment {
 	private static final String LOG_TAG = "OverviewFragment";
@@ -66,7 +66,7 @@ public class OverviewFragment extends ListFragment {
 	private void addTodo() {
 		String todoName = mNewTodo.getText().toString();
 		if (!todoName.equals("")) {
-			Todo todo = new Todo(todoName);
+			Todo todo = new Todo(todoName, 0);
 			db.createTodo(todo);
 			mTodoItems.add(todo);
 			updateList();
