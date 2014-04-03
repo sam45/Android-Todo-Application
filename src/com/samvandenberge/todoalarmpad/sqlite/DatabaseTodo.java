@@ -13,7 +13,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseTodo extends SQLiteOpenHelper {
-	public static final int DATABASE_VERSION = 3;
+	public static final int DATABASE_VERSION = 4;
 	public static final String DATABASE_NAME = "db_todos.sql";
 	// tables
 	public static final String TABLE_TODO = "todos";
@@ -45,8 +45,8 @@ public class DatabaseTodo extends SQLiteOpenHelper {
 
 	// Table Create Statements
 	private static final String CREATE_TABLE_TODO = "CREATE TABLE " + TABLE_TODO + "(" + KEY_ID
-			+ " INTEGER PRIMARY KEY," + KEY_TODO + " TEXT NOT NULL," + KEY_STATUS + " INTEGER," + KEY_CREATED_AT
-			+ "DATETIME DEFAULT CURRENT_TIMESTAMP);";
+			+ " INTEGER PRIMARY KEY," + KEY_TODO + " TEXT NOT NULL," + KEY_STATUS + " INTEGER," 
+			+ KEY_CREATED_AT + " DATETIME" + ")";
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {

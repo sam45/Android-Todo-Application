@@ -11,15 +11,19 @@ import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 import com.samvandenberge.todoalarmpad.model.Todo;
@@ -60,9 +64,29 @@ public class OverviewFragment extends ListFragment {
 			}
 		});
 
+		mNewTodo.setOnEditorActionListener(new OnEditorActionListener() {
+
+			@Override
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+				if (event != null && event.getAction() != KeyEvent.ACTION_DOWN) {
+					return false;
+				} else if (actionId == EditorInfo.IME_ACTION_SEARCH || event == null
+						|| event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+					addTodo();
+					return true;
+				}
+				return false;
+			}
+
+			//				if (actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_DOWN) {
+			//					
+			//				}
+			//				return true;
+
+		});
+
 		mSpeechButton = (ImageView) rootView.findViewById(R.id.btnSpeech);
 		mSpeechButton.setOnClickListener(new OnClickListener() {
-
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
