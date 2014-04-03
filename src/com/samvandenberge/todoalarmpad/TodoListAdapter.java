@@ -6,8 +6,10 @@ import java.util.List;
 import com.samvandenberge.todoalarmpad.model.Todo;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
@@ -29,7 +31,7 @@ public class TodoListAdapter extends ArrayAdapter<Todo> {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View newView = convertView;
-		ViewHolder holder;
+		final ViewHolder holder;
 		Todo todo = todoItems.get(position);
 
 		// inflate new view
@@ -37,7 +39,7 @@ public class TodoListAdapter extends ArrayAdapter<Todo> {
 			holder = new ViewHolder();
 			newView = inflater.inflate(R.layout.list_item, null);
 			holder.name = (TextView) newView.findViewById(R.id.tvName);
-
+			holder.checkbox = (CheckBox) newView.findViewById(R.id.checkboxTodo);
 			// store data in view
 			newView.setTag(holder);
 
@@ -48,6 +50,16 @@ public class TodoListAdapter extends ArrayAdapter<Todo> {
 
 		// refresh data
 		holder.name.setText(todo.getNote());
+		holder.checkbox.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				 CheckBox c = (CheckBox) v;
+
+                Log.i("SAM", "checkbox " + holder.name.getText().toString() + " clicked");
+			}
+		});
 
 		return newView;
 	}
