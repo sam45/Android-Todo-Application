@@ -8,6 +8,13 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.samvandenberge.todoalarmpad.MainActivity$PlaceholderFragment" >
 
+     <Button
+        android:id="@+id/btnSpeech"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:text="Speech" />
+     
     <Button
         android:id="@+id/btnAdd"
         android:layout_width="75dp"
@@ -21,7 +28,8 @@
         android:id="@+id/etAdd"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@id/btnAdd"
+        android:layout_alignBaseline="@id/btnSpeech"
+        android:layout_toRightOf="@id/btnSpeech"
         android:layout_toLeftOf="@id/btnAdd"
         android:hint="@string/add_todo" />
 
@@ -32,5 +40,7 @@
         android:layout_below="@+id/btnAdd"
         android:layout_marginTop="5dp" >
     </ListView>
+
+   
 
 </RelativeLayout>
