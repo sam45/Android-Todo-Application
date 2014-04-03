@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -28,7 +29,8 @@ public class OverviewFragment extends ListFragment {
 	private static final String LOG_TAG = "OverviewFragment";
 	private final int SPEECHTOTEXT = 1;
 
-	private Button mAddButton, mSpeechButton;
+	private Button mAddButton;
+	private ImageView mSpeechButton;
 	private EditText mNewTodo;
 
 	private List<Todo> mTodoItems;
@@ -58,7 +60,7 @@ public class OverviewFragment extends ListFragment {
 			}
 		});
 
-		mSpeechButton = (Button) rootView.findViewById(R.id.btnSpeech);
+		mSpeechButton = (ImageView) rootView.findViewById(R.id.btnSpeech);
 		mSpeechButton.setOnClickListener(new OnClickListener() {
 
 			@Override
