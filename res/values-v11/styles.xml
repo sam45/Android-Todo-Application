@@ -14,7 +14,7 @@
 
     <style name="MyActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
 <!--         <item name="android:background">#3498DB</item> -->
- <item name="android:background">#EEEEEE</item> 
+ <item name="android:background">#DDDDDD</item> 
 
         <item name="android:titleTextStyle">@style/MyTheme.ActionBar.Text</item>
     </style>

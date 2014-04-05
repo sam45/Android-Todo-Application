@@ -11,9 +11,12 @@ import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -24,7 +27,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
-import android.widget.Toast;
 
 import com.samvandenberge.todoalarmpad.model.Todo;
 import com.samvandenberge.todoalarmpad.sqlite.DatabaseTodo;
@@ -54,18 +56,17 @@ public class OverviewFragment extends ListFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-		mNewTodo = (EditText) rootView.findViewById(R.id.etAdd);
+		
 		mAddButton = (Button) rootView.findViewById(R.id.btnAdd);
 		mAddButton.setOnClickListener(new OnClickListener() {
-
 			@Override
 			public void onClick(View v) {
 				addTodo();
 			}
 		});
-
+		
+		mNewTodo = (EditText) rootView.findViewById(R.id.etAdd);
 		mNewTodo.setOnEditorActionListener(new OnEditorActionListener() {
-
 			@Override
 			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 				if (event != null && event.getAction() != KeyEvent.ACTION_DOWN) {
@@ -77,12 +78,6 @@ public class OverviewFragment extends ListFragment {
 				}
 				return false;
 			}
-
-			//				if (actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_DOWN) {
-			//					
-			//				}
-			//				return true;
-
 		});
 
 		mSpeechButton = (ImageView) rootView.findViewById(R.id.btnSpeech);
@@ -90,8 +85,6 @@ public class OverviewFragment extends ListFragment {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-
-				// Getting an instance of PackageManager
 				PackageManager pm = getActivity().getPackageManager();
 				// Querying Package Manager
 				List<ResolveInfo> activities = pm.queryIntentActivities(intent, 0);
@@ -104,7 +97,6 @@ public class OverviewFragment extends ListFragment {
 				intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak now");
 				startActivityForResult(intent, SPEECHTOTEXT);
 			}
-
 		});
 
 		mAdapter = new TodoListAdapter(getActivity(), R.layout.list_item, mTodoItems);
@@ -112,23 +104,37 @@ public class OverviewFragment extends ListFragment {
 
 		return rootView;
 	}
+	
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		registerForContextMenu(getListView());
+	}
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// TODO Auto-generated method stub
-
 		super.onActivityResult(requestCode, resultCode, data);
 
 		switch (requestCode) {
 		case SPEECHTOTEXT:
-			if (resultCode == Activity.RESULT_OK && null != data) {
+			if (resultCode == Activity.RESULT_OK && data != null) {
 				ArrayList<String> text = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-				mNewTodo.setText(text.get(0));
+				if (text.size() > 0) {
+					mNewTodo.setText(text.get(0));
+					mNewTodo.setSelection(mNewTodo.getText().length()); // set cursor at the end
+				}
 			}
 			break;
 		}
 	}
 
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+		 MenuInflater inflater = getActivity().getMenuInflater();
+         inflater.inflate(R.menu.main, menu);
+	}
+	
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);

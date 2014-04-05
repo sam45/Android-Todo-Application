@@ -4,13 +4,12 @@
     android:layout_height="match_parent"
     android:gravity="center" >
 
-    <TextView
-        android:id="@+id/todo"
+    <ListView
+        android:id="@+id/list"
         style="@style/header"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
         android:gravity="center"
         android:paddingLeft="@dimen/label_margin"
         android:paddingRight="@dimen/label_margin"
@@ -19,12 +18,5 @@
         android:singleLine="false"
         android:textAlignment="center"
         android:textColor="@android:color/white" />
-    
-    <ListView
-        android:id="@+id/list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="5dp" >
-    </ListView>
 
 </RelativeLayout>
