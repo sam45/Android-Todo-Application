@@ -25,7 +25,7 @@
 
         <service
             android:name="com.samvandenberge.todoalarmpad.extension.TodoExtension"
-            android:icon="@drawable/ic_launcher"
+            android:icon="@drawable/ic_alarmpad_extension"
             android:label="@string/extension_title"
             android:permission="com.mindmeapp.extensions.permission.READ_EXTENSION_DATA" >
             <intent-filter>
@@ -43,8 +43,13 @@
                 android:value="@string/extension_description" />
             <meta-data
                 android:name="settingsActivity"
-                android:value=".ReminderSettingsActivity" />
+                android:value="com.samvandenberge.todoalarmpad.extension.TodoSettingsActivity" />
         </service>
+          <activity
+            android:name="com.samvandenberge.todoalarmpad.extension.TodoSettingsActivity"
+            android:exported="true"
+            android:label="@string/title_settings" >
+        </activity>
     </application>
 
 </manifest>

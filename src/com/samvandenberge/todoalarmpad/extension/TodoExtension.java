@@ -23,6 +23,7 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.mindmeapp.extensions.ExtensionData;
@@ -33,35 +34,64 @@ import com.samvandenberge.todoalarmpad.sqlite.DatabaseTodo;
 
 public class TodoExtension extends MindMeExtension {
 	public static final String PREF_SPEAK_BEFORE = "pref_speak_before";
-	public static final String PREF_REMINDER_ITEM = "pref_reminder_item";
+	public static final String PREF_SPEAK_AFTER = "pref_speak_after";
+	public static final String PREF_COUNT_ONLY = "pref_count_only";
+
+	private List<Todo> todoItems = null;
 
 	@Override
 	protected void onUpdateData(int reason) {
 		// Get preference value for text to speak before the quote
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 		String name = sp.getString(PREF_SPEAK_BEFORE, getString(R.string.pref_speak_before_default)) + " ";
-
-		// TODO fix when there are no todo items
+		String nameAfter = sp.getString(PREF_SPEAK_AFTER, getString(R.string.pref_speak_after_default)) + " ";
+		boolean noRemoteView = sp.getBoolean(PREF_COUNT_ONLY, false);
+		Log.i("SAM", noRemoteView + "");
 		// Get the todo items 
 		DatabaseTodo db = DatabaseTodo.getInstance(getApplicationContext());
-		List<Todo> todoItems = db.getAllTodos();
-
-		RemoteViews main = new RemoteViews(this.getPackageName(), R.layout.testview);
-		for (Todo item : todoItems) {
-			RemoteViews newremoteview = new RemoteViews(this.getPackageName(), R.layout.testitem);
-			newremoteview.setTextViewText(R.id.testtextview, item.getNote());
-			main.addView(R.id.testview, newremoteview);
-		}
+		todoItems = db.getAllTodos();
 
 		// onClick intent
-//		Intent intent = new Intent(this, com.samvandenberge.todoalarmpad.MainActivity.class);
-//		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//		PendingIntent activity = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-//		main.setOnClickPendingIntent(R.id.tvExtensionTodo1, activity);
 
-		// Publish the extension data update
-		publishUpdate(new ExtensionData().visible(true).icon(R.drawable.ic_launcher).statusToDisplay(todoItems.size() + " Todo\'s")
-				.statusToSpeak("You have " + todoItems.size() + " tasks.").languageToSpeak(Locale.US).viewsToDisplay(main)
-				.contentDescription("You have " + todoItems.size() + " tasks."));
+
+		// data to show
+		ExtensionData data = new ExtensionData().visible(true).icon(R.drawable.ic_alarmpad_extension).languageToSpeak(Locale.US);
+		if (todoItems != null && todoItems.size() > 0) {		
+			data.statusToDisplay(todoItems.size() + " Todo\'s")
+				.statusToSpeak(name + " " + todoItems.size() + " " + nameAfter + ".")
+				.contentDescription("You have " + todoItems.size() + " tasks.");
+			if (!noRemoteView) {
+				RemoteViews main = showTasks();
+				data.viewsToDisplay(main);
+			}
+		} else {
+			// Publish the extension data update
+			data.statusToDisplay("No Todo\'s").statusToSpeak(name + " no " + nameAfter + ".").contentDescription("You have no tasks.");
+		}
+		publishUpdate(data);
+	}
+
+	/**
+	 * Show the tasks in a remote view
+	 * 
+	 * @param pendingIntent
+	 * @return
+	 */
+	private RemoteViews showTasks() {
+		Intent intent = new Intent(this, com.samvandenberge.todoalarmpad.MainActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+		PendingIntent activity = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+		RemoteViews main = new RemoteViews(this.getPackageName(), R.layout.remoteview_parent);
+		for (Todo item : todoItems) {
+			// TODO only show items with status 0
+			// TODO possible setting: also show marked as done todo's
+			if (item.getStatus() == 0) {
+				RemoteViews newremoteview = new RemoteViews(this.getPackageName(), R.layout.remoteview_item);
+				newremoteview.setTextViewText(R.id.remoteTextview, item.getNote());
+				main.addView(R.id.remoteParent, newremoteview);
+				newremoteview.setOnClickPendingIntent(R.id.remoteTextview, activity);
+			}		
+		}
+		return main;
 	}
 }
