@@ -19,10 +19,9 @@ package com.samvandenberge.todoalarmpad.extension;
 import java.util.List;
 import java.util.Locale;
 
-import android.appwidget.AppWidgetManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.widget.RemoteViews;
 
@@ -47,61 +46,22 @@ public class TodoExtension extends MindMeExtension {
 		DatabaseTodo db = DatabaseTodo.getInstance(getApplicationContext());
 		List<Todo> todoItems = db.getAllTodos();
 
-		
-		 // to populate a list, use a service
-        // http://www.androidbook.com/item/3637
-        // http://www.cnblogs.com/carlo/p/3333864.html
-		
-		// RemoteView
-        RemoteViews rv = new RemoteViews(this.getPackageName(), R.layout.extension_remoteview);
-        Intent updateIntent = new Intent(this, WidgetService.class);
-        updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 1);
-        updateIntent.setData(Uri.parse(updateIntent.toUri(Intent.URI_INTENT_SCHEME)));
-        rv.setRemoteAdapter(R.id.list, updateIntent);
+		RemoteViews main = new RemoteViews(this.getPackageName(), R.layout.testview);
+		for (Todo item : todoItems) {
+			RemoteViews newremoteview = new RemoteViews(this.getPackageName(), R.layout.testitem);
+			newremoteview.setTextViewText(R.id.testtextview, item.getNote());
+			main.addView(R.id.testview, newremoteview);
+		}
 
-        // Alternative
-        RemoteViews rv2 = new RemoteViews(this.getPackageName(), R.layout.extension_remoteview_manual);
-        rv2.setTextViewText(R.id.tvExtensionTodo1, todoItems.get(0).getNote());
-        rv2.setTextViewText(R.id.tvExtensionTodo2, todoItems.get(1).getNote());
-        rv2.setTextViewText(R.id.tvExtensionTodo3, todoItems.get(2).getNote());
-        rv2.setTextViewText(R.id.tvExtensionTodo4, todoItems.get(3).getNote());
-        rv2.setTextViewText(R.id.tvExtensionTodo5, todoItems.get(4).getNote());
-        rv2.setTextViewText(R.id.tvExtensionTodo6, todoItems.get(6).getNote());
-        
-        
-        
-//        LayoutInflater inflater = (LayoutInflater)getApplication().getSystemService
-//        	      (Context.LAYOUT_INFLATER_SERVICE);
-//        View inflated = inflater.inflate(R.layout.extension_remoteview_manual, null);
-//        View parent = inflated.findViewById(R.id.tvExtensionTodoParent);
-//        
-//        ViewGroup rootView = (ViewGroup) rv.findViewById(android.R.id.content).getRootView();
-//        applyFontRecursively(rootView, font);
-//        
-//        
-        //RemoteViews rv = new RemoteViews(this.getPackageName(), R.layout.extension_remoteview);
-       // Intent svcIntent = new Intent(this, WidgetService.class);
-        
-//        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-//        ComponentName thisAppWidget = new ComponentName(this.getPackageName(), TodoWidgetProvider.class.getName());
-//        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget);
-  
-//        Intent intent = new Intent(this, WidgetService.class);
-//        PendingIntent pendingIntentTemplate = PendingIntent.getActivity(this, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-//        rv.setPendingIntentTemplate(R.id.list, pendingIntentTemplate);
-//        rv.setRemoteAdapter(R.id.list, intent);
-        
+		// onClick intent
+//		Intent intent = new Intent(this, com.samvandenberge.todoalarmpad.MainActivity.class);
+//		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//		PendingIntent activity = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+//		main.setOnClickPendingIntent(R.id.tvExtensionTodo1, activity);
 
-       // svcIntent.setData(Uri.parse(svcIntent.toUri(Intent.URI_INTENT_SCHEME)));
-//        RemoteViews widget = new RemoteViews(this.getPackageName(), R.layout.extension_remoteview);
-//        widget.setRemoteAdapter(R.id.list, svcIntent);
-		
 		// Publish the extension data update
-		publishUpdate(new ExtensionData().visible(true).icon(R.drawable.ic_launcher)
-				.statusToDisplay(todoItems.size() + " Todo\'s")
-				.statusToSpeak("You have " + todoItems.size() + " Todo\'s")
-				.languageToSpeak(Locale.US)
-				.viewsToDisplay(rv2)
-				.contentDescription("You have " + todoItems.size() + " Todo\'s"));
+		publishUpdate(new ExtensionData().visible(true).icon(R.drawable.ic_launcher).statusToDisplay(todoItems.size() + " Todo\'s")
+				.statusToSpeak("You have " + todoItems.size() + " tasks.").languageToSpeak(Locale.US).viewsToDisplay(main)
+				.contentDescription("You have " + todoItems.size() + " tasks."));
 	}
 }

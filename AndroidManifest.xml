@@ -23,18 +23,6 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name="com.samvandenberge.todoalarmpad.extension.TodoWidgetProvider" >
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" >
-                </action>
-            </intent-filter>
-        </receiver>
-
-        <service
-            android:name="com.samvandenberge.todoalarmpad.extension.widgetservice"
-            android:exported="false"
-            android:permission="android.permission.BIND_REMOTEVIEWS" >
-        </service>
         <service
             android:name="com.samvandenberge.todoalarmpad.extension.TodoExtension"
             android:icon="@drawable/ic_launcher"
