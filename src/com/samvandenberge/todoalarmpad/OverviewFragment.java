@@ -1,6 +1,7 @@
 package com.samvandenberge.todoalarmpad;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import android.app.Activity;
@@ -30,7 +31,6 @@ import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
@@ -38,7 +38,6 @@ import com.samvandenberge.todoalarmpad.model.Todo;
 import com.samvandenberge.todoalarmpad.sqlite.DatabaseTodo;
 
 public class OverviewFragment extends ListFragment {
-	private static final String LOG_TAG = "OverviewFragment";
 	private static final String KEY_SORT_MODE = "sort_mode";
 	private final int SPEECHTOTEXT = 1;
 
@@ -49,8 +48,10 @@ public class OverviewFragment extends ListFragment {
 	private List<Todo> mTodoItems;
 	private ArrayAdapter<Todo> mAdapter;
 	private DatabaseTodo db;
+	private boolean mIsSortInversed;
 
-	public OverviewFragment() {}
+	public OverviewFragment() {
+	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -58,17 +59,21 @@ public class OverviewFragment extends ListFragment {
 		setHasOptionsMenu(true);
 		db = DatabaseTodo.getInstance(getActivity());
 		mTodoItems = db.getAllTodos();
+		mIsSortInversed = false; // default
 	}
 
 	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {		
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		String sortMode = sharedPref.getString(KEY_SORT_MODE, "time_added");
-		
-		if (sortMode.equals("manual")) {
-			menu.findItem(R.id.action_sort_by_manual).setChecked(true);
+		if (sortMode.equals("time_added_oldest")) {
+			menu.findItem(R.id.action_sort_by_time_added_oldest).setChecked(true);
+			mIsSortInversed = true;
+			Collections.reverse(mTodoItems);
+			updateList();
 		} else {
 			menu.findItem(R.id.action_sort_by_time_added).setChecked(true);
+			mIsSortInversed = false;
 		}
 		super.onCreateOptionsMenu(menu, inflater);
 	}
@@ -77,32 +82,40 @@ public class OverviewFragment extends ListFragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		SharedPreferences.Editor editor = sharedPref.edit();
-		
-		
+
 		switch (item.getItemId()) {
 		case R.id.action_clear_completed:
 			deleteTodos();
 			return true;
 		case R.id.action_sort_by_time_added:
-            if (item.isChecked()) item.setChecked(false);
-            else {
-            	item.setChecked(true);
-            	editor.putString(KEY_SORT_MODE, "time_added");
-            	editor.commit();
-            }
-            return true;
-		case R.id.action_sort_by_manual:
-            if (item.isChecked()) item.setChecked(false);
-            else {
-            	item.setChecked(true);
-            	editor.putString(KEY_SORT_MODE, "manual");
-            	editor.commit();
-            }
-            return true;
+			if (item.isChecked())
+				item.setChecked(false);
+			else {
+				item.setChecked(true);
+				editor.putString(KEY_SORT_MODE, "time_added");
+				editor.commit();				
+				mIsSortInversed = false;
+				Collections.reverse(mTodoItems);
+				updateList();			
+			}
+			return true;
+		case R.id.action_sort_by_time_added_oldest:
+			if (item.isChecked())
+				item.setChecked(false);
+			else {
+				item.setChecked(true);
+				editor.putString(KEY_SORT_MODE, "time_added_oldest");
+				editor.commit();
+				// reverse 
+				mIsSortInversed = true;
+				Collections.reverse(mTodoItems);				
+				updateList();		
+			}
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
-	}	
+	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -159,16 +172,14 @@ public class OverviewFragment extends ListFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		getListView().setOnItemClickListener(new OnItemClickListener() {
-
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				CheckedTextView tv = (CheckedTextView) view;
 				toggle(tv);
 			}
-
 		});
 	}
-	
+
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
@@ -184,12 +195,6 @@ public class OverviewFragment extends ListFragment {
 			}
 			break;
 		}
-	}
-
-	@Override
-	public void onListItemClick(ListView l, View v, int position, long id) {
-		super.onListItemClick(l, v, position, id);
-		Log.i(LOG_TAG, "Clicked a list item");
 	}
 
 	/**
@@ -221,7 +226,7 @@ public class OverviewFragment extends ListFragment {
 			db.setTodoStatus(id, 1);
 		}
 	}
-	
+
 	/**
 	 * Add a new Todo item
 	 */
@@ -230,22 +235,30 @@ public class OverviewFragment extends ListFragment {
 		if (!todoName.equals("")) {
 			Todo todo = new Todo(todoName, 0);
 			long id = db.createTodo(todo);
-			todo.setId((int)id); // update id
-			mTodoItems.add(todo);
+			todo.setId((int) id); // update id
+
+			// prepend
+			if (mIsSortInversed) {
+				mTodoItems.add(0, todo);
+			} else {
+				// add at the end of the list
+				mTodoItems.add(todo);
+			}
+
 			updateList();
 			mNewTodo.setText("");
 		}
 	}
-	
+
 	/**
 	 * Delete todo's
 	 */
 	private void deleteTodos() {
 		boolean isDataChanged = false;
-		
+
 		db.deleteTodoWithStatus(1);
 
-		for (int i =  mTodoItems.size() - 1; i >=0; i--) {
+		for (int i = mTodoItems.size() - 1; i >= 0; i--) {
 			if (mTodoItems.get(i).getStatus() == 1) {
 				mTodoItems.remove(i);
 				isDataChanged = true;

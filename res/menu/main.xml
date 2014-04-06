@@ -11,12 +11,12 @@
         <menu>
             <group android:checkableBehavior="single" >
                 <item
-                    android:id="@+id/action_sort_by_time_added"
+                    android:id="@+id/action_sort_by_time_added_oldest"
                     android:checked="true"
-                    android:title="@string/sort_by_newest"/>
+                    android:title="@string/sort_by_oldest"/>
                 <item
-                    android:id="@+id/action_sort_by_manual"
-                    android:title="@string/sort_manually"/>
+                    android:id="@+id/action_sort_by_time_added"
+                    android:title="@string/sort_by_newest"/>
             </group>
         </menu>
     </item>
