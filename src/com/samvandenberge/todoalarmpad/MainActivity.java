@@ -23,11 +23,10 @@ public class MainActivity extends Activity {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 			SystemBarTintManager tintManager = new SystemBarTintManager(this);
 			tintManager.setStatusBarTintEnabled(true);
-			// Holo light action bar color is #DDDDDD
 			int actionBarColor = Color.parseColor("#5d98db");
 			tintManager.setStatusBarTintColor(actionBarColor);
-			}
-		
+		}
+
 		if (savedInstanceState == null) {
 			getFragmentManager().beginTransaction().add(R.id.container, new OverviewFragment()).commit();
 		}

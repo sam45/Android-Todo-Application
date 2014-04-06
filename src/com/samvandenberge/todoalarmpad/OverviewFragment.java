@@ -65,15 +65,15 @@ public class OverviewFragment extends ListFragment {
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-		String sortMode = sharedPref.getString(KEY_SORT_MODE, "time_added");
+		String sortMode = sharedPref.getString(KEY_SORT_MODE, "time_added_oldest");
 		if (sortMode.equals("time_added_oldest")) {
 			menu.findItem(R.id.action_sort_by_time_added_oldest).setChecked(true);
+			mIsSortInversed = false;
+		} else {
+			menu.findItem(R.id.action_sort_by_time_added).setChecked(true);
 			mIsSortInversed = true;
 			Collections.reverse(mTodoItems);
 			updateList();
-		} else {
-			menu.findItem(R.id.action_sort_by_time_added).setChecked(true);
-			mIsSortInversed = false;
 		}
 		super.onCreateOptionsMenu(menu, inflater);
 	}
@@ -93,10 +93,10 @@ public class OverviewFragment extends ListFragment {
 			else {
 				item.setChecked(true);
 				editor.putString(KEY_SORT_MODE, "time_added");
-				editor.commit();				
-				mIsSortInversed = false;
+				editor.commit();
+				mIsSortInversed = true;
 				Collections.reverse(mTodoItems);
-				updateList();			
+				updateList();
 			}
 			return true;
 		case R.id.action_sort_by_time_added_oldest:
@@ -107,9 +107,9 @@ public class OverviewFragment extends ListFragment {
 				editor.putString(KEY_SORT_MODE, "time_added_oldest");
 				editor.commit();
 				// reverse 
-				mIsSortInversed = true;
-				Collections.reverse(mTodoItems);				
-				updateList();		
+				mIsSortInversed = false;
+				Collections.reverse(mTodoItems);
+				updateList();
 			}
 			return true;
 		default:
