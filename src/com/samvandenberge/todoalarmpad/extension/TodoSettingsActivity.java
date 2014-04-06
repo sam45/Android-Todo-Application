@@ -1,11 +1,14 @@
 package com.samvandenberge.todoalarmpad.extension;
 
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
 
+import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.samvandenberge.todoalarmpad.R;
 
 public class TodoSettingsActivity extends PreferenceActivity {
@@ -13,6 +16,17 @@ public class TodoSettingsActivity extends PreferenceActivity {
 		super.onCreate(savedInstanceState);
 		getActionBar().setIcon(R.drawable.ic_launcher);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
+
+		// statusbar tint
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+			// alternative for android:fitsSystemWindows="true"
+			findViewById(android.R.id.list).setFitsSystemWindows(true);
+
+			SystemBarTintManager tintManager = new SystemBarTintManager(this);
+			tintManager.setStatusBarTintEnabled(true);
+			int actionBarColor = Color.parseColor("#5d98db");
+			tintManager.setStatusBarTintColor(actionBarColor);
+		}
 	}
 
 	@Override
