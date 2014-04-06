@@ -57,6 +57,7 @@
     <ListView
         android:id="@id/android:list"
         android:layout_width="match_parent"
+        android:choiceMode="multipleChoice"
         android:layout_height="match_parent"
         android:layout_below="@id/layout_new_todo"
         android:layout_marginTop="5dp" >

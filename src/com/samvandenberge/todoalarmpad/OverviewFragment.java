@@ -8,20 +8,23 @@ import android.app.ListFragment;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -54,9 +57,15 @@ public class OverviewFragment extends ListFragment {
 	}
 
 	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.main, menu);
+		super.onCreateOptionsMenu(menu, inflater);
+	}
+
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-		
+
 		mAddButton = (Button) rootView.findViewById(R.id.btnAdd);
 		mAddButton.setOnClickListener(new OnClickListener() {
 			@Override
@@ -64,15 +73,14 @@ public class OverviewFragment extends ListFragment {
 				addTodo();
 			}
 		});
-		
+
 		mNewTodo = (EditText) rootView.findViewById(R.id.etAdd);
 		mNewTodo.setOnEditorActionListener(new OnEditorActionListener() {
 			@Override
 			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 				if (event != null && event.getAction() != KeyEvent.ACTION_DOWN) {
 					return false;
-				} else if (actionId == EditorInfo.IME_ACTION_SEARCH || event == null
-						|| event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+				} else if (actionId == EditorInfo.IME_ACTION_SEARCH || event == null || event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
 					addTodo();
 					return true;
 				}
@@ -99,16 +107,26 @@ public class OverviewFragment extends ListFragment {
 			}
 		});
 
-		mAdapter = new TodoListAdapter(getActivity(), R.layout.list_item, mTodoItems);
+		mAdapter = new TodoListAdapter(this.getActivity(), R.layout.list_item_checked, mTodoItems);
 		setListAdapter(mAdapter);
 
 		return rootView;
 	}
-	
+
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		registerForContextMenu(getListView());
+		getListView().setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				// TODO Auto-generated method stub
+				CheckedTextView tv = (CheckedTextView) view;
+				toggle(tv);
+			}
+
+		});
+
 	}
 
 	@Override
@@ -129,13 +147,6 @@ public class OverviewFragment extends ListFragment {
 	}
 
 	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-		super.onCreateContextMenu(menu, v, menuInfo);
-		 MenuInflater inflater = getActivity().getMenuInflater();
-         inflater.inflate(R.menu.main, menu);
-	}
-	
-	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
 		Log.i(LOG_TAG, "Clicked a list item");
@@ -155,10 +166,35 @@ public class OverviewFragment extends ListFragment {
 		}
 	}
 
+	public boolean performAction(int itemId, int position) {
+		switch (itemId) {
+		case R.id.item_remove: {
+			Log.i("SAM", "mark as deleted");
+			// TODO mark as deleted
+			return true;
+		}
+		}
+		return false;
+	}
+
 	/**
 	 * Update the ListView
 	 */
 	private void updateList() {
 		mAdapter.notifyDataSetChanged();
 	}
+
+	/**
+	 * Toggle CheckBoxes and strike through if checked
+	 * 
+	 * @param v
+	 */
+	public void toggle(CheckedTextView v) {
+		if (v.isChecked()) {
+			v.setPaintFlags(v.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+		} else {
+			v.setPaintFlags(v.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+		}
+	}
+
 }

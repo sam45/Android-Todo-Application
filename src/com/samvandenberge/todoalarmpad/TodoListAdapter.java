@@ -4,15 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
-import android.graphics.Paint;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
 import com.samvandenberge.todoalarmpad.model.Todo;
@@ -38,12 +33,10 @@ public class TodoListAdapter extends ArrayAdapter<Todo> {
 		// inflate new view
 		if (null == convertView) {
 			holder = new ViewHolder();
-			newView = inflater.inflate(R.layout.list_item, null);
-			holder.name = (TextView) newView.findViewById(R.id.tvName);
-			holder.checkbox = (CheckBox) newView.findViewById(R.id.checkboxTodo);
+			newView = inflater.inflate(R.layout.list_item_checked, null);
+			holder.name = (TextView) newView.findViewById(R.id.tvNote);
 			// store data in view
 			newView.setTag(holder);
-
 			// re-use view
 		} else {
 			holder = (ViewHolder) newView.getTag();
@@ -51,24 +44,11 @@ public class TodoListAdapter extends ArrayAdapter<Todo> {
 
 		// refresh data
 		holder.name.setText(todo.getNote());
-		holder.checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				// strike through when selected
-				if (isChecked) {
-					Log.i("SAM", "STRIKE THROUGH");
-					holder.name.setPaintFlags(holder.name.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-				} else {
-					holder.name.setPaintFlags(holder.name.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-				}
-			}
-		});
 
 		return newView;
 	}
 
 	static class ViewHolder {
 		TextView name;
-		CheckBox checkbox;
 	}
 }

@@ -13,11 +13,13 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:checked="false"
+
         android:paddingRight="5dp" >
     </CheckBox>
 
     <TextView
         android:id="@+id/tvName"
+        android:textSize="17sp"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_alignBaseline="@id/checkboxTodo"
