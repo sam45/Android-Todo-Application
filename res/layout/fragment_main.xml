@@ -1,10 +1,11 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="5dp"
     android:paddingRight="5dp"
     android:paddingTop="5dp"
+    android:orientation="vertical"
     tools:context="com.samvandenberge.todoalarmpad.MainActivity$PlaceholderFragment" >
 
     <RelativeLayout
@@ -18,6 +19,7 @@
         android:paddingRight="5dp" >
 
         <ImageView
+            android:contentDescription="@string/speech_input"
             android:id="@+id/btnSpeech"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -46,21 +48,15 @@
             android:inputType="textCapSentences"
             android:singleLine="true" />
 
-        <!-- <View -->
-        <!-- android:layout_width="match_parent" -->
-        <!-- android:layout_height="2dp" -->
-        <!-- android:layout_below="@id/btnAdd" -->
-        <!-- android:layout_marginTop="5dp" -->
-        <!-- android:background="#489FFF" /> -->
     </RelativeLayout>
 
     <ListView
         android:id="@id/android:list"
         android:layout_width="match_parent"
-        android:choiceMode="multipleChoice"
+		android:choiceMode="none"
         android:layout_height="match_parent"
         android:layout_below="@id/layout_new_todo"
         android:layout_marginTop="5dp" >
     </ListView>
 
-</RelativeLayout>
+</LinearLayout>

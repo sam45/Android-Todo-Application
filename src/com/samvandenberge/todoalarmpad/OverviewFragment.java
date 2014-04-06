@@ -6,16 +6,19 @@ import java.util.List;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -36,6 +39,7 @@ import com.samvandenberge.todoalarmpad.sqlite.DatabaseTodo;
 
 public class OverviewFragment extends ListFragment {
 	private static final String LOG_TAG = "OverviewFragment";
+	private static final String KEY_SORT_MODE = "sort_mode";
 	private final int SPEECHTOTEXT = 1;
 
 	private Button mAddButton;
@@ -46,21 +50,59 @@ public class OverviewFragment extends ListFragment {
 	private ArrayAdapter<Todo> mAdapter;
 	private DatabaseTodo db;
 
-	public OverviewFragment() {
-	}
+	public OverviewFragment() {}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setHasOptionsMenu(true);
 		db = DatabaseTodo.getInstance(getActivity());
 		mTodoItems = db.getAllTodos();
 	}
 
 	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		inflater.inflate(R.menu.main, menu);
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {		
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+		String sortMode = sharedPref.getString(KEY_SORT_MODE, "time_added");
+		
+		if (sortMode.equals("manual")) {
+			menu.findItem(R.id.action_sort_by_manual).setChecked(true);
+		} else {
+			menu.findItem(R.id.action_sort_by_time_added).setChecked(true);
+		}
 		super.onCreateOptionsMenu(menu, inflater);
 	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+		SharedPreferences.Editor editor = sharedPref.edit();
+		
+		
+		switch (item.getItemId()) {
+		case R.id.action_clear_completed:
+			deleteTodos();
+			return true;
+		case R.id.action_sort_by_time_added:
+            if (item.isChecked()) item.setChecked(false);
+            else {
+            	item.setChecked(true);
+            	editor.putString(KEY_SORT_MODE, "time_added");
+            	editor.commit();
+            }
+            return true;
+		case R.id.action_sort_by_manual:
+            if (item.isChecked()) item.setChecked(false);
+            else {
+            	item.setChecked(true);
+            	editor.putString(KEY_SORT_MODE, "manual");
+            	editor.commit();
+            }
+            return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}	
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -120,15 +162,13 @@ public class OverviewFragment extends ListFragment {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				// TODO Auto-generated method stub
 				CheckedTextView tv = (CheckedTextView) view;
 				toggle(tv);
 			}
 
 		});
-
 	}
-
+	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
@@ -153,28 +193,67 @@ public class OverviewFragment extends ListFragment {
 	}
 
 	/**
+	 * Toggle CheckBoxes and strike through if checked
+	 * 
+	 * @param v
+	 */
+	public void toggle(CheckedTextView v) {
+		int id = v.getId();
+
+		// get the clicked Todo
+		Todo clicked = null;
+		for (Todo t : mTodoItems) {
+			if (id == t.getId()) {
+				clicked = t;
+			}
+		}
+
+		// implement checking because of choise_mode none in XML
+		if (v.isChecked() && clicked != null) {
+			v.setChecked(false);
+			clicked.setStatus(0); // unmarked
+			db.setTodoStatus(id, 0);
+			v.setPaintFlags(v.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+		} else if (clicked != null) {
+			v.setChecked(true);
+			v.setPaintFlags(v.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+			clicked.setStatus(1); // marked
+			db.setTodoStatus(id, 1);
+		}
+	}
+	
+	/**
 	 * Add a new Todo item
 	 */
 	private void addTodo() {
 		String todoName = mNewTodo.getText().toString();
 		if (!todoName.equals("")) {
 			Todo todo = new Todo(todoName, 0);
-			db.createTodo(todo);
+			long id = db.createTodo(todo);
+			todo.setId((int)id); // update id
 			mTodoItems.add(todo);
 			updateList();
 			mNewTodo.setText("");
 		}
 	}
+	
+	/**
+	 * Delete todo's
+	 */
+	private void deleteTodos() {
+		boolean isDataChanged = false;
+		
+		db.deleteTodoWithStatus(1);
 
-	public boolean performAction(int itemId, int position) {
-		switch (itemId) {
-		case R.id.item_remove: {
-			Log.i("SAM", "mark as deleted");
-			// TODO mark as deleted
-			return true;
+		for (int i =  mTodoItems.size() - 1; i >=0; i--) {
+			if (mTodoItems.get(i).getStatus() == 1) {
+				mTodoItems.remove(i);
+				isDataChanged = true;
+			}
 		}
+		if (isDataChanged) {
+			updateList();
 		}
-		return false;
 	}
 
 	/**
@@ -183,18 +262,4 @@ public class OverviewFragment extends ListFragment {
 	private void updateList() {
 		mAdapter.notifyDataSetChanged();
 	}
-
-	/**
-	 * Toggle CheckBoxes and strike through if checked
-	 * 
-	 * @param v
-	 */
-	public void toggle(CheckedTextView v) {
-		if (v.isChecked()) {
-			v.setPaintFlags(v.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-		} else {
-			v.setPaintFlags(v.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-		}
-	}
-
 }

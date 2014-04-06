@@ -75,7 +75,8 @@ public class DatabaseTodo extends SQLiteOpenHelper {
 		values.put(KEY_TODO, todo.getNote());
 		values.put(KEY_STATUS, todo.getStatus());
 		values.put(KEY_CREATED_AT, Helper.getDateTime());
-
+		values.put(KEY_STATUS, 0);
+		
 		return db.insert(TABLE_TODO, null, values);
 	}
 
@@ -94,7 +95,7 @@ public class DatabaseTodo extends SQLiteOpenHelper {
 
 		Todo td = new Todo();
 		td.setId(c.getInt(c.getColumnIndex(KEY_ID)));
-		td.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+		td.setStatus(c.getInt(c.getColumnIndex(KEY_STATUS)));
 		td.setNote((c.getString(c.getColumnIndex(KEY_TODO))));
 		td.setCreatedAt(c.getString(c.getColumnIndex(KEY_CREATED_AT)));
 
@@ -109,6 +110,12 @@ public class DatabaseTodo extends SQLiteOpenHelper {
 	public void deleteTodo(long todoId) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		db.delete(TABLE_TODO, KEY_ID + " = ?", new String[] { String.valueOf(todoId) });
+	}
+	
+	public void deleteTodoWithStatus(int status) {
+		SQLiteDatabase db = this.getWritableDatabase();
+
+		db.delete(TABLE_TODO, KEY_STATUS + " = ?", new String[] { String.valueOf(status) });
 	}
 
 	/**
@@ -129,12 +136,25 @@ public class DatabaseTodo extends SQLiteOpenHelper {
 				td.setId(c.getInt((c.getColumnIndex(KEY_ID))));
 				td.setNote((c.getString(c.getColumnIndex(KEY_TODO))));
 				td.setCreatedAt(c.getString(c.getColumnIndex(KEY_CREATED_AT)));
-
+				td.setStatus(c.getInt(c.getColumnIndex(KEY_STATUS)));
 				todoItems.add(td);
 			} while (c.moveToNext());
 		}
 
 		return todoItems;
+	}
+	
+	/**
+	 * 
+	 * @param todoId
+	 */
+	public void setTodoStatus(long todoId, int status) {
+		SQLiteDatabase db = this.getWritableDatabase();
+
+		String strFilter = KEY_ID + "=" + todoId;
+		ContentValues args = new ContentValues();
+		args.put(KEY_STATUS, status);
+		db.update(TABLE_TODO, args, strFilter, null);
 	}
 
 	/**
