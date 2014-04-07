@@ -20,5 +20,6 @@
     <string name="add">Add</string>
     <string name="add_todo">Add Todo</string>
     <string name="speech_input">Speech input</string>
+    <string name="action_clear_all">Clear all todo\'s</string>
 
 </resources>
