@@ -19,7 +19,7 @@ public class MainActivity extends Activity {
 		// don't pop up keyboard automatically
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
-		// statusbar tint
+		// statusBar tint
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 			SystemBarTintManager tintManager = new SystemBarTintManager(this);
 			tintManager.setStatusBarTintEnabled(true);

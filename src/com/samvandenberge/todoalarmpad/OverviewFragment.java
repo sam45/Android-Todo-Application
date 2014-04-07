@@ -5,7 +5,9 @@ import java.util.Collections;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ListFragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -52,7 +54,7 @@ public class OverviewFragment extends ListFragment {
 
 	public OverviewFragment() {
 	}
-
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -112,6 +114,13 @@ public class OverviewFragment extends ListFragment {
 				updateList();
 			}
 			return true;
+		case R.id.action_clear_all:
+			confirmClearAll();
+			return true;
+		case R.id.action_about:
+			Intent intent = new Intent(getActivity(), AboutActivity.class);
+			startActivity(intent);
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -135,7 +144,8 @@ public class OverviewFragment extends ListFragment {
 			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 				if (event != null && event.getAction() != KeyEvent.ACTION_DOWN) {
 					return false;
-				} else if (actionId == EditorInfo.IME_ACTION_SEARCH || event == null || event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+				} else if (actionId == EditorInfo.IME_ACTION_SEARCH || event == null
+						|| event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
 					addTodo();
 					return true;
 				}
@@ -274,5 +284,27 @@ public class OverviewFragment extends ListFragment {
 	 */
 	private void updateList() {
 		mAdapter.notifyDataSetChanged();
+	}
+	
+	/**
+	 * Delete all todo's but confirm first
+	 */
+	private void confirmClearAll() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		builder.setMessage("Are you sure you want to delete all todo\'s?").setCancelable(false)
+				.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						db.deleteTodoWithStatus(0);
+						db.deleteTodoWithStatus(1);
+						mTodoItems.clear();
+						updateList();
+					}
+				}).setNegativeButton("No", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				});
+		AlertDialog alert = builder.create();
+		alert.show();
 	}
 }

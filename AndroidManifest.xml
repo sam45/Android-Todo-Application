@@ -22,6 +22,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.samvandenberge.todoalarmpad.AboutActivity"
+            android:label="About" 
+            android:parentActivityName="com.samvandenberge.todoalarmpad.MainActivity">
+        </activity>
 
         <service
             android:name="com.samvandenberge.todoalarmpad.extension.TodoExtension"
@@ -45,7 +50,8 @@
                 android:name="settingsActivity"
                 android:value="com.samvandenberge.todoalarmpad.extension.TodoSettingsActivity" />
         </service>
-          <activity
+
+        <activity
             android:name="com.samvandenberge.todoalarmpad.extension.TodoSettingsActivity"
             android:exported="true"
             android:label="@string/title_settings" >

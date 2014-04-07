@@ -26,9 +26,13 @@
         android:orderInCategory="2"
         android:showAsAction="ifRoom"
         android:title="@string/action_clear"/>
-<item
+    <item
         android:id="@+id/action_clear_all"
-        android:orderInCategory="2"
         android:showAsAction="never"
         android:title="@string/action_clear_all"/>
+    <item
+        android:id="@+id/action_about"
+        android:showAsAction="never"
+        android:title="@string/action_about"/>
+	
 </menu>
