@@ -46,6 +46,7 @@ public class OverviewFragment extends ListFragment {
 	private Button mAddButton;
 	private ImageView mSpeechButton;
 	private EditText mNewTodo;
+	private TextView mEmptyView;
 
 	private List<Todo> mTodoItems;
 	private ArrayAdapter<Todo> mAdapter;
@@ -129,7 +130,7 @@ public class OverviewFragment extends ListFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-
+		mEmptyView = (TextView)rootView.findViewById(R.id.empty);
 		mAddButton = (Button) rootView.findViewById(R.id.btnAdd);
 		mAddButton.setOnClickListener(new OnClickListener() {
 			@Override
@@ -181,6 +182,7 @@ public class OverviewFragment extends ListFragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+		getListView().setEmptyView(mEmptyView);
 		getListView().setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

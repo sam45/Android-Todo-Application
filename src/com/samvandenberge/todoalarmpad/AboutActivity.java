@@ -18,7 +18,7 @@ public class AboutActivity extends Activity {
 		setContentView(R.layout.activity_about);
 		
 		final TextView intro = (TextView)findViewById(R.id.intro);
-		intro.setText(getString(R.string.app_name) + " uses the following Open Source libraries");
+		intro.setText(getString(R.string.app_name) + " uses the following Open Source libraries:");
 
 		// statusBar tint
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {

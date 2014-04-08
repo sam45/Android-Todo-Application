@@ -1,0 +1,80 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:orientation="horizontal"
+    android:paddingLeft="25dp"
+    android:paddingRight="25dp"
+    android:paddingTop="15dp"
+    android:weightSum="10"
+    tools:context="com.samvandenberge.todoalarmpad.MainActivity$PlaceholderFragment" >
+
+    <RelativeLayout
+        android:id="@+id/layout_new_todo"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_weight="4"
+        android:background="#FFFFFF"
+        android:padding="25dp" >
+
+        <EditText
+            android:id="@+id/etAdd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/btnSpeech"
+            android:layout_toRightOf="@id/btnSpeech"
+            android:hint="@string/add_todo"
+            android:inputType="textCapSentences"
+            android:singleLine="true" >
+        </EditText>
+
+        <Button
+            android:id="@+id/btnAdd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/etAdd"
+            android:layout_marginTop="10dp"
+            android:enabled="true"
+            android:text="@string/add"
+            android:textColor="#222222" />
+
+        <ImageView
+            android:id="@+id/btnSpeech"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/btnAdd"
+            android:contentDescription="@string/speech_input"
+            android:paddingTop="5dp"
+            android:src="@android:drawable/ic_btn_speak_now" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:background="@android:color/darker_gray" />
+
+    <TextView
+        android:id="@+id/empty"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="6"
+        android:gravity="center"
+        android:text="You have no todo\&apos;s!"
+        android:textSize="20dp"
+        android:textStyle="italic"
+        android:visibility="gone" />
+
+    <ListView
+        android:id="@id/android:list"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
+        android:layout_weight="6"
+        android:choiceMode="none" >
+    </ListView>
+
+</LinearLayout>
