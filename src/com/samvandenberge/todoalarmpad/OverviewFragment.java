@@ -36,10 +36,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
+import com.samvandenberge.todoalarmpad.extension.TodoExtension;
 import com.samvandenberge.todoalarmpad.model.Todo;
 import com.samvandenberge.todoalarmpad.sqlite.DatabaseTodo;
 
 public class OverviewFragment extends ListFragment {
+	private static final String TAG = "OverviewFragment";
 	private static final String KEY_SORT_MODE = "sort_mode";
 	private final int SPEECHTOTEXT = 1;
 
@@ -286,6 +288,9 @@ public class OverviewFragment extends ListFragment {
 	 */
 	private void updateList() {
 		mAdapter.notifyDataSetChanged();
+		// update extension data
+		Log.i(TAG, "Send broadcast to extension");
+		getActivity().sendBroadcast(new Intent(TodoExtension.ACTION_UPDATE_ALARMPAD));
 	}
 	
 	/**

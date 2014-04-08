@@ -20,10 +20,12 @@ import java.util.List;
 import java.util.Locale;
 
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.mindmeapp.extensions.ExtensionData;
@@ -33,42 +35,46 @@ import com.samvandenberge.todoalarmpad.model.Todo;
 import com.samvandenberge.todoalarmpad.sqlite.DatabaseTodo;
 
 public class TodoExtension extends MindMeExtension {
+	public static final String ACTION_UPDATE_ALARMPAD = "action_update_alarmpad";
 	public static final String PREF_SPEAK_BEFORE = "pref_speak_before";
 	public static final String PREF_SPEAK_AFTER = "pref_speak_after";
 	public static final String PREF_COUNT_ONLY = "pref_count_only";
 
 	private List<Todo> todoItems = null;
+	private AlarmChangedReceiver mAlarmChangedReceiver;
 
-	@Override
-	protected void onUpdateData(int reason) {
+	public ExtensionData getData() {
 		// Get preference value for text to speak before the quote
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 		String name = sp.getString(PREF_SPEAK_BEFORE, getString(R.string.pref_speak_before_default)) + " ";
 		String nameAfter = sp.getString(PREF_SPEAK_AFTER, getString(R.string.pref_speak_after_default)) + " ";
 		boolean noRemoteView = sp.getBoolean(PREF_COUNT_ONLY, false);
-		Log.i("SAM", noRemoteView + "");
 		// Get the todo items 
 		DatabaseTodo db = DatabaseTodo.getInstance(getApplicationContext());
 		todoItems = db.getAllTodos();
 
-		// onClick intent
-
-
 		// data to show
-		ExtensionData data = new ExtensionData().visible(true).icon(R.drawable.ic_alarmpad_extension).languageToSpeak(Locale.US);
-		if (todoItems != null && todoItems.size() > 0) {		
+		ExtensionData data = new ExtensionData().visible(true).icon(R.drawable.ic_alarmpad_extension)
+				.languageToSpeak(Locale.US);
+		if (todoItems != null && todoItems.size() > 0) {
 			data.statusToDisplay(todoItems.size() + " Todo\'s")
-				.statusToSpeak(name + " " + todoItems.size() + " " + nameAfter + ".")
-				.contentDescription("You have " + todoItems.size() + " tasks.");
+					.statusToSpeak(name + " " + todoItems.size() + " " + nameAfter + ".")
+					.contentDescription("You have " + todoItems.size() + " tasks.");
 			if (!noRemoteView) {
 				RemoteViews main = showTasks();
 				data.viewsToDisplay(main);
 			}
 		} else {
 			// Publish the extension data update
-			data.statusToDisplay("No Todo\'s").statusToSpeak(name + " no " + nameAfter + ".").contentDescription("You have no tasks.");
+			data.statusToDisplay("No Todo\'s").statusToSpeak(name + " no " + nameAfter + ".")
+					.contentDescription("You have no tasks.");
 		}
-		publishUpdate(data);
+		return data;
+	}
+
+	@Override
+	protected void onUpdateData(int reason) {
+		publishUpdate(getData());
 	}
 
 	/**
@@ -78,7 +84,7 @@ public class TodoExtension extends MindMeExtension {
 	 * @return
 	 */
 	private RemoteViews showTasks() {
-		
+
 		RemoteViews main = new RemoteViews(this.getPackageName(), R.layout.remoteview_parent);
 		for (Todo item : todoItems) {
 			// TODO only show items with status 0
@@ -87,13 +93,41 @@ public class TodoExtension extends MindMeExtension {
 				RemoteViews newremoteview = new RemoteViews(this.getPackageName(), R.layout.remoteview_item);
 				newremoteview.setTextViewText(R.id.remoteTextview, item.getNote());
 				main.addView(R.id.remoteParent, newremoteview);
-				
+
 				Intent intent = new Intent(this, com.samvandenberge.todoalarmpad.MainActivity.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 				PendingIntent activity = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 				newremoteview.setOnClickPendingIntent(R.id.remoteTextview, activity);
-			}		
+			}
 		}
 		return main;
+	}
+
+	/**
+	 * Manually refresh the data for the extension
+	 * 
+	 * @author Sam
+	 * 
+	 */
+	class AlarmChangedReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			publishUpdate(getData());
+		}
+	}
+
+	@Override
+	protected void onInitialize(boolean isReconnect) {
+		super.onInitialize(isReconnect);
+		if (mAlarmChangedReceiver != null) {
+			try {
+				unregisterReceiver(mAlarmChangedReceiver);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		IntentFilter intentFilter = new IntentFilter(ACTION_UPDATE_ALARMPAD);
+		mAlarmChangedReceiver = new AlarmChangedReceiver();
+		registerReceiver(mAlarmChangedReceiver, intentFilter);
 	}
 }

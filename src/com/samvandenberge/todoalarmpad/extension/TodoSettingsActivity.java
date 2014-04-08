@@ -17,11 +17,10 @@ public class TodoSettingsActivity extends PreferenceActivity {
 		getActionBar().setIcon(R.drawable.ic_launcher);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 
-		// statusbar tint
+		// statusBar tint
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 			// alternative for android:fitsSystemWindows="true"
 			findViewById(android.R.id.list).setFitsSystemWindows(true);
-
 			SystemBarTintManager tintManager = new SystemBarTintManager(this);
 			tintManager.setStatusBarTintEnabled(true);
 			int actionBarColor = Color.parseColor("#5d98db");
@@ -99,7 +98,7 @@ public class TodoSettingsActivity extends PreferenceActivity {
 
 		// Trigger the listener immediately with the preference's
 		// current value.
-		sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
-				PreferenceManager.getDefaultSharedPreferences(preference.getContext()).getString(preference.getKey(), ""));
+		sBindPreferenceSummaryToValueListener.onPreferenceChange(preference, PreferenceManager
+				.getDefaultSharedPreferences(preference.getContext()).getString(preference.getKey(), ""));
 	}
 }
