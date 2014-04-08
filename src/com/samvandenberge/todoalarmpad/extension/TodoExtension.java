@@ -78,9 +78,7 @@ public class TodoExtension extends MindMeExtension {
 	 * @return
 	 */
 	private RemoteViews showTasks() {
-		Intent intent = new Intent(this, com.samvandenberge.todoalarmpad.MainActivity.class);
-		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-		PendingIntent activity = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+		
 		RemoteViews main = new RemoteViews(this.getPackageName(), R.layout.remoteview_parent);
 		for (Todo item : todoItems) {
 			// TODO only show items with status 0
@@ -89,6 +87,10 @@ public class TodoExtension extends MindMeExtension {
 				RemoteViews newremoteview = new RemoteViews(this.getPackageName(), R.layout.remoteview_item);
 				newremoteview.setTextViewText(R.id.remoteTextview, item.getNote());
 				main.addView(R.id.remoteParent, newremoteview);
+				
+				Intent intent = new Intent(this, com.samvandenberge.todoalarmpad.MainActivity.class);
+				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+				PendingIntent activity = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 				newremoteview.setOnClickPendingIntent(R.id.remoteTextview, activity);
 			}		
 		}
