@@ -37,7 +37,6 @@ import com.samvandenberge.todoalarmpad.sqlite.DatabaseTodo;
 public class TodoExtension extends MindMeExtension {
 	public static final String ACTION_UPDATE_ALARMPAD = "action_update_alarmpad";
 	public static final String PREF_SPEAK_BEFORE = "pref_speak_before";
-	public static final String PREF_SPEAK_AFTER = "pref_speak_after";
 	public static final String PREF_COUNT_ONLY = "pref_count_only";
 
 	private List<Todo> todoItems = null;
@@ -47,26 +46,33 @@ public class TodoExtension extends MindMeExtension {
 		// Get preference value for text to speak before the quote
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 		String name = sp.getString(PREF_SPEAK_BEFORE, getString(R.string.pref_speak_before_default)) + " ";
-		String nameAfter = sp.getString(PREF_SPEAK_AFTER, getString(R.string.pref_speak_after_default)) + " ";
 		boolean noRemoteView = sp.getBoolean(PREF_COUNT_ONLY, false);
 		// Get the todo items 
 		DatabaseTodo db = DatabaseTodo.getInstance(getApplicationContext());
-		todoItems = db.getAllTodos();
+		todoItems = db.getNonCompletedTodos();
 
 		// data to show
 		ExtensionData data = new ExtensionData().visible(true).icon(R.drawable.ic_alarmpad_extension)
 				.languageToSpeak(Locale.US);
 		if (todoItems != null && todoItems.size() > 0) {
-			data.statusToDisplay(todoItems.size() + " Todo\'s")
-					.statusToSpeak(name + " " + todoItems.size() + " " + nameAfter + ".")
+			if (todoItems.size() == 1) {
+				data.statusToDisplay(todoItems.size() + " Todo");
+				data.statusToSpeak(name + " " + todoItems.size() + " task.")
+					.contentDescription("You have " + todoItems.size() + " task.");
+			} else {
+				data.statusToDisplay(todoItems.size() + " Todo\'s");
+				data.statusToSpeak(name + " " + todoItems.size() + " tasks.")
 					.contentDescription("You have " + todoItems.size() + " tasks.");
+			}
+
+			
 			if (!noRemoteView) {
 				RemoteViews main = showTasks();
 				data.viewsToDisplay(main);
 			}
 		} else {
 			// Publish the extension data update
-			data.statusToDisplay("No Todo\'s").statusToSpeak(name + " no " + nameAfter + ".")
+			data.statusToDisplay("No Todo\'s").statusToSpeak(name + " no tasks.")
 					.contentDescription("You have no tasks.");
 		}
 		return data;
@@ -84,22 +90,18 @@ public class TodoExtension extends MindMeExtension {
 	 * @return
 	 */
 	private RemoteViews showTasks() {
-
 		RemoteViews main = new RemoteViews(this.getPackageName(), R.layout.remoteview_parent);
 		for (Todo item : todoItems) {
-			// TODO only show items with status 0
-			// TODO possible setting: also show marked as done todo's
-			if (item.getStatus() == 0) {
-				RemoteViews newremoteview = new RemoteViews(this.getPackageName(), R.layout.remoteview_item);
-				newremoteview.setTextViewText(R.id.remoteTextview, item.getNote());
-				main.addView(R.id.remoteParent, newremoteview);
+			RemoteViews newremoteview = new RemoteViews(this.getPackageName(), R.layout.remoteview_item);
+			newremoteview.setTextViewText(R.id.remoteTextview, item.getNote());
+			main.addView(R.id.remoteParent, newremoteview);
 
-				Intent intent = new Intent(this, com.samvandenberge.todoalarmpad.MainActivity.class);
-				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-				PendingIntent activity = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-				newremoteview.setOnClickPendingIntent(R.id.remoteTextview, activity);
-			}
+			Intent intent = new Intent(this, com.samvandenberge.todoalarmpad.MainActivity.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+			PendingIntent activity = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+			newremoteview.setOnClickPendingIntent(R.id.remoteTextview, activity);
 		}
+
 		return main;
 	}
 

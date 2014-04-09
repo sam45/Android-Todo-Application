@@ -55,8 +55,7 @@ public class OverviewFragment extends ListFragment {
 	private DatabaseTodo db;
 	private boolean mIsSortInversed;
 
-	public OverviewFragment() {
-	}
+	public OverviewFragment() {}
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -197,7 +196,6 @@ public class OverviewFragment extends ListFragment {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-
 		switch (requestCode) {
 		case SPEECHTOTEXT:
 			if (resultCode == Activity.RESULT_OK && data != null) {
@@ -218,7 +216,6 @@ public class OverviewFragment extends ListFragment {
 	 */
 	public void toggle(CheckedTextView v) {
 		int id = v.getId();
-
 		// get the clicked Todo
 		Todo clicked = null;
 		for (Todo t : mTodoItems) {
@@ -239,6 +236,7 @@ public class OverviewFragment extends ListFragment {
 			clicked.setStatus(1); // marked
 			db.setTodoStatus(id, 1);
 		}
+		getActivity().sendBroadcast(new Intent(TodoExtension.ACTION_UPDATE_ALARMPAD));
 	}
 
 	/**
@@ -250,7 +248,6 @@ public class OverviewFragment extends ListFragment {
 			Todo todo = new Todo(todoName, 0);
 			long id = db.createTodo(todo);
 			todo.setId((int) id); // update id
-
 			// prepend
 			if (mIsSortInversed) {
 				mTodoItems.add(0, todo);
@@ -269,9 +266,7 @@ public class OverviewFragment extends ListFragment {
 	 */
 	private void deleteTodos() {
 		boolean isDataChanged = false;
-
 		db.deleteTodoWithStatus(1);
-
 		for (int i = mTodoItems.size() - 1; i >= 0; i--) {
 			if (mTodoItems.get(i).getStatus() == 1) {
 				mTodoItems.remove(i);

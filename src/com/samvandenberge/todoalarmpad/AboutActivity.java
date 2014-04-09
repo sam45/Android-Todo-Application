@@ -1,6 +1,7 @@
 package com.samvandenberge.todoalarmpad;
 
 import com.readystatesoftware.systembartint.SystemBarTintManager;
+import com.samvandenberge.todoalarmpad.R;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -12,7 +13,6 @@ public class AboutActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		setContentView(R.layout.activity_about);

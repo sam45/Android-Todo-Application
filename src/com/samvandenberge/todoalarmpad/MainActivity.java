@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.WindowManager;
 
 import com.readystatesoftware.systembartint.SystemBarTintManager;
+import com.samvandenberge.todoalarmpad.R;
 
 public class MainActivity extends Activity {
 

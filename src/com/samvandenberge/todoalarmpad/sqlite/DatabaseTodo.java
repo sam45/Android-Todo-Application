@@ -20,7 +20,7 @@ public class DatabaseTodo extends SQLiteOpenHelper {
 	// common column names
 	public static final String KEY_ID = "_id";
 	public static final String KEY_TODO = "todo";
-	public static final String KEY_STATUS = "status";
+	public static final String KEY_STATUS = "status"; // 0 is not done, 1 = done
 	public static final String KEY_CREATED_AT = "created_at";
 
 	private static DatabaseTodo sInstance;
@@ -45,8 +45,8 @@ public class DatabaseTodo extends SQLiteOpenHelper {
 
 	// Table Create Statements
 	private static final String CREATE_TABLE_TODO = "CREATE TABLE " + TABLE_TODO + "(" + KEY_ID
-			+ " INTEGER PRIMARY KEY," + KEY_TODO + " TEXT NOT NULL," + KEY_STATUS + " INTEGER," 
-			+ KEY_CREATED_AT + " DATETIME" + ")";
+			+ " INTEGER PRIMARY KEY," + KEY_TODO + " TEXT NOT NULL," + KEY_STATUS + " INTEGER," + KEY_CREATED_AT
+			+ " DATETIME" + ")";
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
@@ -60,7 +60,6 @@ public class DatabaseTodo extends SQLiteOpenHelper {
 			return;
 		}
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_TODO);
-
 		onCreate(db);
 	}
 
@@ -76,7 +75,7 @@ public class DatabaseTodo extends SQLiteOpenHelper {
 		values.put(KEY_STATUS, todo.getStatus());
 		values.put(KEY_CREATED_AT, Helper.getDateTime());
 		values.put(KEY_STATUS, 0);
-		
+
 		return db.insert(TABLE_TODO, null, values);
 	}
 
@@ -111,7 +110,7 @@ public class DatabaseTodo extends SQLiteOpenHelper {
 		SQLiteDatabase db = this.getWritableDatabase();
 		db.delete(TABLE_TODO, KEY_ID + " = ?", new String[] { String.valueOf(todoId) });
 	}
-	
+
 	public void deleteTodoWithStatus(int status) {
 		SQLiteDatabase db = this.getWritableDatabase();
 
@@ -144,6 +143,32 @@ public class DatabaseTodo extends SQLiteOpenHelper {
 		return todoItems;
 	}
 	
+	/**
+	 * Get all TODO's
+	 * 
+	 * @return
+	 */
+	public List<Todo> getNonCompletedTodos() {
+		List<Todo> todoItems = new ArrayList<Todo>();
+
+		String selectQuery = "SELECT * FROM " + TABLE_TODO + " WHERE " + KEY_STATUS +"= 0";
+		SQLiteDatabase db = this.getReadableDatabase();
+		Cursor c = db.rawQuery(selectQuery, null);
+
+		if (c.moveToFirst()) {
+			do {
+				Todo td = new Todo();
+				td.setId(c.getInt((c.getColumnIndex(KEY_ID))));
+				td.setNote((c.getString(c.getColumnIndex(KEY_TODO))));
+				td.setCreatedAt(c.getString(c.getColumnIndex(KEY_CREATED_AT)));
+				td.setStatus(c.getInt(c.getColumnIndex(KEY_STATUS)));
+				todoItems.add(td);
+			} while (c.moveToNext());
+		}
+
+		return todoItems;
+	}
+
 	/**
 	 * 
 	 * @param todoId

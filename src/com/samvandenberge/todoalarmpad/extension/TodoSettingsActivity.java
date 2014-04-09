@@ -1,11 +1,13 @@
 package com.samvandenberge.todoalarmpad.extension;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.readystatesoftware.systembartint.SystemBarTintManager;
@@ -45,6 +47,16 @@ public class TodoSettingsActivity extends PreferenceActivity {
 
 		return super.onOptionsItemSelected(item);
 	}
+	
+	/**
+	 * Fix for force cache refresh when updating settings
+	 */
+	@Override
+	protected void onDestroy() {
+		Log.i("TodoSettingsActivity", "Send broadcast to extension");
+		sendBroadcast(new Intent(TodoExtension.ACTION_UPDATE_ALARMPAD));
+		super.onDestroy();
+	}
 
 	@SuppressWarnings("deprecation")
 	private void setupSimplePreferencesScreen() {
@@ -58,7 +70,6 @@ public class TodoSettingsActivity extends PreferenceActivity {
 		// their values. When their values change, their summaries are updated
 		// to reflect the new value, per the Android Design guidelines.
 		bindPreferenceSummaryToValue(findPreference(TodoExtension.PREF_SPEAK_BEFORE));
-		bindPreferenceSummaryToValue(findPreference(TodoExtension.PREF_SPEAK_AFTER));
 	}
 
 	@Override

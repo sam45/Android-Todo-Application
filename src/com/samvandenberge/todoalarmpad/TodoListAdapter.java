@@ -54,7 +54,6 @@ public class TodoListAdapter extends ArrayAdapter<Todo> {
 			holder.note.setChecked(false);
 			holder.note.setPaintFlags(holder.note.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
 		}
-		
 
 		return newView;
 	}
