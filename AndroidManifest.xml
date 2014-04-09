@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.samvandenberge.todoalarmpad"
+    package="com.samvandenberge.todo"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:theme="@style/MyTheme" >
         <activity
-            android:name="com.samvandenberge.todoalarmpad.MainActivity"
+            android:name="com.samvandenberge.todo.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,13 +23,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.samvandenberge.todoalarmpad.AboutActivity"
+            android:name="com.samvandenberge.todo.AboutActivity"
             android:label="About" 
-            android:parentActivityName="com.samvandenberge.todoalarmpad.MainActivity">
+            android:parentActivityName="com.samvandenberge.todo.MainActivity">
         </activity>
 
         <service
-            android:name="com.samvandenberge.todoalarmpad.extension.TodoExtension"
+            android:name="com.samvandenberge.todo.extension.TodoExtension"
             android:icon="@drawable/ic_alarmpad_extension"
             android:label="@string/extension_title"
             android:permission="com.mindmeapp.extensions.permission.READ_EXTENSION_DATA" >
@@ -48,11 +48,11 @@
                 android:value="@string/extension_description" />
             <meta-data
                 android:name="settingsActivity"
-                android:value="com.samvandenberge.todoalarmpad.extension.TodoSettingsActivity" />
+                android:value="com.samvandenberge.todo.extension.TodoSettingsActivity" />
         </service>
 
         <activity
-            android:name="com.samvandenberge.todoalarmpad.extension.TodoSettingsActivity"
+            android:name="com.samvandenberge.todo.extension.TodoSettingsActivity"
             android:exported="true"
             android:label="@string/title_settings" >
         </activity>

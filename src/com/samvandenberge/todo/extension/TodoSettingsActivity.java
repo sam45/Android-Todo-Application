@@ -1,4 +1,4 @@
-package com.samvandenberge.todoalarmpad.extension;
+package com.samvandenberge.todo.extension;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -11,7 +11,7 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import com.readystatesoftware.systembartint.SystemBarTintManager;
-import com.samvandenberge.todoalarmpad.R;
+import com.samvandenberge.todo.R;
 
 public class TodoSettingsActivity extends PreferenceActivity {
 	public void onCreate(Bundle savedInstanceState) {

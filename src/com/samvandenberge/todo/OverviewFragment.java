@@ -1,4 +1,4 @@
-package com.samvandenberge.todoalarmpad;
+package com.samvandenberge.todo;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,9 +36,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
-import com.samvandenberge.todoalarmpad.extension.TodoExtension;
-import com.samvandenberge.todoalarmpad.model.Todo;
-import com.samvandenberge.todoalarmpad.sqlite.DatabaseTodo;
+import com.samvandenberge.todo.extension.TodoExtension;
+import com.samvandenberge.todo.model.Todo;
+import com.samvandenberge.todo.sqlite.DatabaseTodo;
 
 public class OverviewFragment extends ListFragment {
 	private static final String TAG = "OverviewFragment";

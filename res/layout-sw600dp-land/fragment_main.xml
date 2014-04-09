@@ -8,7 +8,7 @@
     android:paddingRight="25dp"
     android:paddingTop="15dp"
     android:weightSum="10"
-    tools:context="com.samvandenberge.todoalarmpad.MainActivity$PlaceholderFragment" >
+    tools:context="com.samvandenberge.todo.MainActivity$PlaceholderFragment" >
 
     <RelativeLayout
         android:id="@+id/layout_new_todo"
@@ -55,7 +55,7 @@
         android:layout_height="match_parent"
         android:layout_marginLeft="25dp"
         android:layout_marginRight="25dp"
-        android:background="@android:color/darker_gray" />
+        />
 
     <TextView
         android:id="@+id/empty"

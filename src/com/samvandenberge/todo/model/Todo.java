@@ -1,4 +1,4 @@
-package com.samvandenberge.todoalarmpad.model;
+package com.samvandenberge.todo.model;
 
 /**
  * Todo object

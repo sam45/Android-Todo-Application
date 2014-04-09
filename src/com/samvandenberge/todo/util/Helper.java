@@ -1,4 +1,4 @@
-package com.samvandenberge.todoalarmpad.util;
+package com.samvandenberge.todo.util;
 
 import java.util.Date;
 import java.text.SimpleDateFormat;

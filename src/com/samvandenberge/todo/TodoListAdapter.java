@@ -1,4 +1,4 @@
-package com.samvandenberge.todoalarmpad;
+package com.samvandenberge.todo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckedTextView;
 
-import com.samvandenberge.todoalarmpad.model.Todo;
+import com.samvandenberge.todo.model.Todo;
 
 public class TodoListAdapter extends ArrayAdapter<Todo> {
 	private List<Todo> todoItems = new ArrayList<Todo>();

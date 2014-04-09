@@ -6,7 +6,7 @@
     android:paddingLeft="5dp"
     android:paddingRight="5dp"
     android:paddingTop="5dp"
-    tools:context="com.samvandenberge.todoalarmpad.MainActivity$PlaceholderFragment" >
+    tools:context="com.samvandenberge.todo.MainActivity$PlaceholderFragment" >
 
     <RelativeLayout
         android:id="@+id/layout_new_todo"

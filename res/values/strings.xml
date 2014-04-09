@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Basic Todo</string>
+    <string name="app_name">Todo</string>
     <string name="action_settings">Settings</string>
     <string name="action_clear">Clear completed</string>
     <string name="action_sort">Sort order</string>
@@ -9,7 +9,7 @@
     <string name="sort_by_oldest">Oldest first</string>
 
     <!-- AlarmPad extension -->
-    <string name="extension_title">Basic Todo Extension</string>
+    <string name="extension_title">Todo Extension</string>
     <string name="extension_description">See your Todo items when the alarm rings.</string>
     <string name="pref_speak_before">Sentence to speak before the todo</string>
     <string name="pref_speak_before_default">You have</string>

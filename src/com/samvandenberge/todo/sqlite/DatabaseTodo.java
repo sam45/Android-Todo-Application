@@ -1,10 +1,10 @@
-package com.samvandenberge.todoalarmpad.sqlite;
+package com.samvandenberge.todo.sqlite;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.samvandenberge.todoalarmpad.model.Todo;
-import com.samvandenberge.todoalarmpad.util.Helper;
+import com.samvandenberge.todo.model.Todo;
+import com.samvandenberge.todo.util.Helper;
 
 import android.content.ContentValues;
 import android.content.Context;

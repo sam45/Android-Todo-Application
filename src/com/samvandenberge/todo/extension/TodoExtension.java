@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.samvandenberge.todoalarmpad.extension;
+package com.samvandenberge.todo.extension;
 
 import java.util.List;
 import java.util.Locale;
@@ -30,9 +30,9 @@ import android.widget.RemoteViews;
 
 import com.mindmeapp.extensions.ExtensionData;
 import com.mindmeapp.extensions.MindMeExtension;
-import com.samvandenberge.todoalarmpad.R;
-import com.samvandenberge.todoalarmpad.model.Todo;
-import com.samvandenberge.todoalarmpad.sqlite.DatabaseTodo;
+import com.samvandenberge.todo.R;
+import com.samvandenberge.todo.model.Todo;
+import com.samvandenberge.todo.sqlite.DatabaseTodo;
 
 public class TodoExtension extends MindMeExtension {
 	public static final String ACTION_UPDATE_ALARMPAD = "action_update_alarmpad";
@@ -96,7 +96,7 @@ public class TodoExtension extends MindMeExtension {
 			newremoteview.setTextViewText(R.id.remoteTextview, item.getNote());
 			main.addView(R.id.remoteParent, newremoteview);
 
-			Intent intent = new Intent(this, com.samvandenberge.todoalarmpad.MainActivity.class);
+			Intent intent = new Intent(this, com.samvandenberge.todo.MainActivity.class);
 			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 			PendingIntent activity = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 			newremoteview.setOnClickPendingIntent(R.id.remoteTextview, activity);

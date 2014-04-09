@@ -1,7 +1,7 @@
-package com.samvandenberge.todoalarmpad;
+package com.samvandenberge.todo;
 
 import com.readystatesoftware.systembartint.SystemBarTintManager;
-import com.samvandenberge.todoalarmpad.R;
+import com.samvandenberge.todo.R;
 
 import android.app.Activity;
 import android.graphics.Color;
