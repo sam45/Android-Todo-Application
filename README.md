@@ -4,8 +4,6 @@ Android-Todo-Application
 Todo Application for Android with an extension for [AlarmPad](http://play.google.com/store/apps/details?id=com.mindmeapp.alarmpad).
 ___
 
-[Play Store link](https://play.google.com/store/apps/details?id=com.samvandenberge.todo)
-
 Todo is a task manager application that shows a list of tasks.
 <br />
 <b>Alarmpad extension</b>
